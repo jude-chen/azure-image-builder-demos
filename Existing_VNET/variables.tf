@@ -7,7 +7,7 @@ variable "location" {
 variable "resource_prefix" {
   description = "The prefix for the resource names."
   type        = string
-  default     = "aibnovnet"
+  default     = "aibexistingvnet"
 }
 
 variable "subscription_id" {

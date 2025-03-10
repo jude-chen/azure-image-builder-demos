@@ -75,7 +75,7 @@ resource "azapi_resource" "image-template" {
         osDiskSizeGB = 127
         vmSize       = "Standard_D2s_v3"
         vnetConfig = {
-          subnetId = azurerm_virtual_network.demo-vnet.subnet[0].id
+          subnetId = azurerm_virtual_network.demo-vnet.subnet.*.id[0]
         }
       }
     }
