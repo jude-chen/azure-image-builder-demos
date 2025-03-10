@@ -24,11 +24,25 @@ resource "azurerm_subnet" "aib-subnet" {
   private_link_service_network_policies_enabled = false
 }
 
+resource "azurerm_subnet" "aci-subnet" {
+  name                 = "aci-subnet"
+  resource_group_name  = azurerm_resource_group.demo-rg.name
+  virtual_network_name = azurerm_virtual_network.demo-vnet.name
+  address_prefixes     = ["10.0.0.64/26"]
+  delegation {
+    name = "aci-delegation"
+    service_delegation {
+      name    = "Microsoft.ContainerInstance/containerGroups"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}
+
 resource "azurerm_subnet" "vm-subnet" {
   name                 = "vm-subnet"
   resource_group_name  = azurerm_resource_group.demo-rg.name
   virtual_network_name = azurerm_virtual_network.demo-vnet.name
-  address_prefixes     = ["10.0.0.64/26"]
+  address_prefixes     = ["10.0.0.128/26"]
 }
 
 resource "azurerm_storage_account" "demo-sa" {
