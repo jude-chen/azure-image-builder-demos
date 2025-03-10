@@ -1,9 +1,9 @@
 resource "azapi_resource" "image-template" {
   type      = "Microsoft.VirtualMachineImages/imageTemplates@2024-02-01"
-  name      = "${var.resource_prefix}-template"
+  name      = "Win2022Web-template"
   parent_id = azurerm_resource_group.demo-rg.id
   location  = var.location
-  body = jsonencode({
+  body = {
     identity = {
       type = "UserAssigned"
       userAssignedIdentities = {
@@ -25,13 +25,13 @@ resource "azapi_resource" "image-template" {
         {
           name        = "webpagefile"
           type        = "File"
-          sourceUri   = "https://${azurerm_storage_blob.webpage.url}"
+          sourceUri   = azurerm_storage_blob.webpage.url
           destination = "C:\\ImageBuilderWebApp\\index.html"
         },
         {
           name        = "setupwebsite"
           type        = "PowerShell"
-          scriptUri   = "https://${azurerm_storage_blob.pwshscript.url}"
+          scriptUri   = azurerm_storage_blob.pwshscript.url
           runAsSystem = false
           runElevated = true
         },
@@ -73,8 +73,21 @@ resource "azapi_resource" "image-template" {
       }
       vmProfile = {
         osDiskSizeGB = 127
-        vmSize       = "Standard_DS1_v2"
+        vmSize       = "Standard_D2s_v3"
       }
     }
-  })
+  }
+  depends_on = [azurerm_role_assignment.gallery-role-assignment, azurerm_role_assignment.storage-role-assignment]
+}
+
+resource "terraform_data" "buildImage" {
+  triggers_replace = [timestamp()]
+
+  provisioner "local-exec" {
+    command = "az resource invoke-action --resource-group ${azurerm_resource_group.demo-rg.name} --resource-type Microsoft.VirtualMachineImages/imageTemplates -n ${azapi_resource.image-template.name} --action Run"
+  }
+
+  depends_on = [
+    azapi_resource.image-template
+  ]
 }

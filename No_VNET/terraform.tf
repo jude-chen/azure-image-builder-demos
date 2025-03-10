@@ -1,12 +1,4 @@
 terraform {
-  # remove this section if not using Terraform Cloud
-  cloud {
-    organization = "jude-demos"
-    workspaces {
-      name = "azure-image-builder-demo-novnet"
-    }
-  }
-
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -38,6 +30,6 @@ provider "random" {
 provider "azapi" {
   # Configure the azapi provider
   # This provider is used to create the image builder template
-  enable_preflight = true
+  enable_preflight = false
   subscription_id  = var.subscription_id
 }

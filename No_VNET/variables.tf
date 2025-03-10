@@ -13,5 +13,5 @@ variable "resource_prefix" {
 variable "subscription_id" {
   description = "The Azure subscription ID."
   type        = string
-  default     = "3ab3f568-ab27-413c-be5a-7a1cc89a8104"
+  default     = "49a8be25-7877-4460-a634-7c9c60a5be08"
 }
